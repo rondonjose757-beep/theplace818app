@@ -18,6 +18,9 @@ $nombre   = $_SESSION['nombre'] ?? '';
   <link rel="manifest" href="/public/manifest.json" />
   <link rel="stylesheet" href="/public/assets/css/app.css" />
   <link rel="stylesheet" href="/public/assets/css/cajero.css" />
+  <?php if (in_array($rol, ['administrador', 'dueño'])): ?>
+  <link rel="stylesheet" href="/public/assets/css/reportes.css" />
+  <?php endif; ?>
 </head>
 <body>
 
@@ -77,8 +80,7 @@ $nombre   = $_SESSION['nombre'] ?? '';
 
     <?php if (in_array($rol, ['administrador', 'dueño'])): ?>
     <div id="view-reportes" class="view">
-      <h3>Reportes</h3>
-      <p class="placeholder-text">Módulo en construcción.</p>
+      <?php include __DIR__ . '/reportes.php'; ?>
     </div>
     <div id="view-creditos" class="view">
       <h3>Créditos</h3>
@@ -98,5 +100,9 @@ $nombre   = $_SESSION['nombre'] ?? '';
 
 <script src="/public/assets/js/app.js"></script>
 <script src="/public/assets/js/cajero.js"></script>
+<?php if (in_array($rol, ['administrador', 'dueño'])): ?>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="/public/assets/js/reportes.js"></script>
+<?php endif; ?>
 </body>
 </html>
