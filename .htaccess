@@ -1,33 +1,64 @@
+# ────────────────────────────────────────────────────
+# FRONT CONTROLLER — The Place 818
+# Doc root: /home/u510862327/domains/gastroredes.com/
+#           public_html/theplace818app/
+# ────────────────────────────────────────────────────
+
+# Cuando se pide el directorio raíz, Apache sirve este archivo.
+# Actúa como respaldo si mod_rewrite no está activo.
 DirectoryIndex public/index.php
 
+# Desactivar listado de directorios en todo el proyecto
 Options -Indexes
 
-# ---- Proteger carpetas sensibles ----
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  # Base del proyecto dentro de public_html; todas las rutas
+  # en las reglas de abajo son relativas a este directorio.
   RewriteBase /
 
-  # Bloquear acceso directo a /config e /install
+  # ── 1. CARPETAS SENSIBLES ─────────────────────────
+  # Devuelve 403 si alguien intenta acceder a /config/ o /install/
   RewriteRule ^config(/|$) - [F,L]
   RewriteRule ^install(/|$) - [F,L]
 
-  # Bloquear ejecución directa de .php fuera de /public/ y /api/
+  # ── 2. BLOQUEAR .php FUERA DE /public/ y /api/ ───
+  # Evita ejecutar test.php u otros archivos PHP huérfanos en la raíz.
+  # La condición excluye los directorios legítimos de PHP.
   RewriteCond %{REQUEST_URI} !^/(public|api)/
   RewriteRule \.php$ - [F,L]
 
-  # Pasar /api/ directamente — llamadas AJAX desde el navegador
+  # ── 3. PASOS DIRECTOS (sin reescritura) ──────────
+  # /api/  → los endpoints AJAX llegan aquí y se sirven tal cual
   RewriteRule ^api/ - [L]
 
-  # Pasar /public/ directamente — assets y vistas PHP
+  # /public/ → assets CSS/JS/img y vistas PHP ya están en su lugar;
+  #            pasar directo es también la primera línea anti-loop:
+  #            si la URI ya es /public/... la regla catch-all no dispara.
   RewriteRule ^public/ - [L]
 
-  # Redirigir /assets/ a /public/assets/ (rutas legacy sin prefijo /public/)
+  # ── 4. ALIAS LEGACY ───────────────────────────────
+  # Rutas /assets/... sin prefijo /public/ que puedan venir de
+  # código viejo o marcadores del navegador
   RewriteRule ^assets/(.*)$ public/assets/$1 [L]
 
-  # Todo lo demás (incluida /) → front controller
-  # Nota: se eliminó !-d para que la raíz "/" no cause 403
+  # ── 5. FRONT CONTROLLER (catch-all) ───────────────
+  # Envía todo lo que no sea un archivo real a public/index.php.
+  #
+  # Condición A — %{REQUEST_URI} !^/public/
+  #   Guarda anti-loop definitiva: si Apache re-procesa el ruleset
+  #   tras reescribir a /public/index.php, esta condición es FALSE
+  #   y la regla no vuelve a disparar. Sin esto, en algunos Apache
+  #   de hosting compartido [L] no impide el segundo pase.
+  #
+  # Condición B — %{REQUEST_FILENAME} !-f
+  #   No sobreescribir archivos físicos que ya existen
+  #   (manifest.json, robots.txt, etc.)
+  RewriteCond %{REQUEST_URI}      !^/public/
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteRule ^ public/index.php [QSA,L]
+
 </IfModule>
 
 # ---- Bloquear acceso al .env ----
