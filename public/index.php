@@ -5,6 +5,9 @@ session_start();
 $loggedIn = isset($_SESSION['user_id']);
 $rol      = $_SESSION['rol']    ?? '';
 $nombre   = $_SESSION['nombre'] ?? '';
+
+$esAdmin  = $rol === 'administrador';
+$esDueno  = in_array($rol, ['administrador', 'dueño'], true);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -14,12 +17,17 @@ $nombre   = $_SESSION['nombre'] ?? '';
   <meta name="theme-color" content="#e94560" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png" />
   <title>The Place 818 — Control de Caja</title>
   <link rel="manifest" href="/public/manifest.json" />
   <link rel="stylesheet" href="/public/assets/css/app.css" />
   <link rel="stylesheet" href="/public/assets/css/cajero.css" />
-  <?php if (in_array($rol, ['administrador', 'dueño'])): ?>
+  <?php if ($esDueno): ?>
   <link rel="stylesheet" href="/public/assets/css/reportes.css" />
+  <link rel="stylesheet" href="/public/assets/css/creditos.css" />
+  <?php endif; ?>
+  <?php if ($esAdmin): ?>
+  <link rel="stylesheet" href="/public/assets/css/usuarios.css" />
   <?php endif; ?>
 </head>
 <body>
@@ -63,46 +71,74 @@ $nombre   = $_SESSION['nombre'] ?? '';
 
   <nav class="app-nav">
     <button class="nav-btn active" data-view="caja">Caja del día</button>
-    <?php if (in_array($rol, ['administrador', 'dueño'])): ?>
+    <?php if ($esDueno): ?>
     <button class="nav-btn" data-view="reportes">Reportes</button>
     <button class="nav-btn" data-view="creditos">Créditos</button>
     <?php endif; ?>
-    <?php if ($rol === 'administrador'): ?>
+    <?php if ($esAdmin): ?>
     <button class="nav-btn" data-view="usuarios">Usuarios</button>
     <?php endif; ?>
   </nav>
 
   <main id="view-container" class="view-container">
-    <!-- Las vistas se cargan dinámicamente con JS -->
+
     <div id="view-caja" class="view active">
       <?php include __DIR__ . '/cajero.php'; ?>
     </div>
 
-    <?php if (in_array($rol, ['administrador', 'dueño'])): ?>
+    <?php if ($esDueno): ?>
     <div id="view-reportes" class="view">
       <?php include __DIR__ . '/reportes.php'; ?>
     </div>
     <div id="view-creditos" class="view">
-      <h3>Créditos</h3>
-      <p class="placeholder-text">Módulo en construcción.</p>
+      <?php include __DIR__ . '/creditos.php'; ?>
     </div>
     <?php endif; ?>
 
-    <?php if ($rol === 'administrador'): ?>
+    <?php if ($esAdmin): ?>
     <div id="view-usuarios" class="view">
-      <h3>Gestión de usuarios</h3>
-      <p class="placeholder-text">Módulo en construcción.</p>
+      <?php include __DIR__ . '/usuarios.php'; ?>
     </div>
     <?php endif; ?>
+
   </main>
 </div>
 <?php endif; ?>
 
 <script src="/public/assets/js/app.js"></script>
 <script src="/public/assets/js/cajero.js"></script>
-<?php if (in_array($rol, ['administrador', 'dueño'])): ?>
+<?php if ($esDueno): ?>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="/public/assets/js/reportes.js"></script>
+<script src="/public/assets/js/creditos.js"></script>
 <?php endif; ?>
+<?php if ($esAdmin): ?>
+<script src="/public/assets/js/usuarios.js"></script>
+<?php endif; ?>
+
+<?php if ($loggedIn): ?>
+<script>
+// Inicializar módulos al cambiar de vista
+(function () {
+  let creditosIniciado = false;
+  let usuariosIniciado = false;
+
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const view = btn.dataset.view;
+      if (view === 'creditos' && !creditosIniciado && typeof initCreditos === 'function') {
+        creditosIniciado = true;
+        initCreditos();
+      }
+      if (view === 'usuarios' && !usuariosIniciado && typeof initUsuarios === 'function') {
+        usuariosIniciado = true;
+        initUsuarios();
+      }
+    });
+  });
+})();
+</script>
+<?php endif; ?>
+
 </body>
 </html>

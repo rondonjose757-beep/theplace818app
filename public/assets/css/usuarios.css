@@ -1,0 +1,181 @@
+/* ================================================
+   Gestión de Usuarios — The Place 818
+   ================================================ */
+
+/* ── Cabecera ── */
+.usr-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.usr-title {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--color-text);
+}
+
+/* ── Tabla ── */
+.usr-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+}
+
+.usr-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .88rem;
+}
+
+.usr-table thead {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.usr-table th {
+  padding: .65rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-muted);
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+
+.usr-table td {
+  padding: .7rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  vertical-align: middle;
+}
+
+.usr-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.usr-table tbody tr:hover td {
+  background: rgba(255,255,255,.03);
+}
+
+.usr-empty {
+  text-align: center;
+  color: var(--color-muted);
+  padding: 2rem 1rem;
+}
+
+/* ── Badges de rol ── */
+.badge-rol {
+  display: inline-block;
+  padding: .2rem .6rem;
+  border-radius: 20px;
+  font-size: .73rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.badge-rol.administrador {
+  background: rgba(233, 69, 96, .15);
+  color: var(--color-accent);
+}
+
+.badge-rol.dueño {
+  background: rgba(52, 152, 219, .15);
+  color: #3498db;
+}
+
+.badge-rol.cajero {
+  background: rgba(46, 204, 113, .15);
+  color: var(--color-success);
+}
+
+/* ── Badge activo/inactivo ── */
+.badge-estado {
+  display: inline-block;
+  padding: .2rem .6rem;
+  border-radius: 20px;
+  font-size: .73rem;
+  font-weight: 600;
+}
+
+.badge-estado.activo {
+  background: rgba(46, 204, 113, .15);
+  color: var(--color-success);
+}
+
+.badge-estado.inactivo {
+  background: rgba(150, 150, 150, .15);
+  color: var(--color-muted);
+}
+
+/* ── Acciones ── */
+.usr-acciones {
+  display: flex;
+  gap: .35rem;
+  flex-wrap: wrap;
+}
+
+/* ── Modales ── */
+.usr-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 1rem;
+}
+
+.usr-modal-overlay.hidden {
+  display: none;
+}
+
+.usr-modal {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 420px;
+}
+
+.usr-modal h4 {
+  margin: 0 0 .5rem;
+  font-size: 1rem;
+}
+
+.usr-modal-subtitle {
+  font-size: .85rem;
+  color: var(--color-muted);
+  margin: 0 0 1rem;
+}
+
+.usr-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: .5rem;
+  margin-top: 1rem;
+}
+
+/* ── Nombre del usuario en tabla ── */
+.usr-nombre-cell {
+  font-weight: 600;
+}
+
+.usr-email-cell {
+  color: var(--color-muted);
+  font-size: .82rem;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .usr-table th:nth-child(2),
+  .usr-table td:nth-child(2) {
+    display: none;
+  }
+}

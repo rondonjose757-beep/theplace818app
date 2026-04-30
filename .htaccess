@@ -1,73 +1,59 @@
-# ────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────
 # FRONT CONTROLLER — The Place 818
 # Doc root: /home/u510862327/domains/gastroredes.com/
 #           public_html/theplace818app/
-# ────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────
 
-# Cuando se pide el directorio raíz, Apache sirve este archivo.
-# Actúa como respaldo si mod_rewrite no está activo.
-DirectoryIndex public/index.php
-
-# Desactivar listado de directorios en todo el proyecto
 Options -Indexes
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
-
-  # Base del proyecto dentro de public_html; todas las rutas
-  # en las reglas de abajo son relativas a este directorio.
   RewriteBase /
 
-  # ── 1. CARPETAS SENSIBLES ─────────────────────────
-  # Devuelve 403 si alguien intenta acceder a /config/ o /install/
-  RewriteRule ^config(/|$) - [F,L]
-  RewriteRule ^install(/|$) - [F,L]
+  # ── 1. DIRECTORIOS SENSIBLES (403) ───────────────────
+  # Bloquea acceso directo a /config/ e /install/
+  RewriteRule ^(config|install)(/|$) - [F,L]
 
-  # ── 2. BLOQUEAR .php FUERA DE /public/ y /api/ ───
-  # Evita ejecutar test.php u otros archivos PHP huérfanos en la raíz.
-  # La condición excluye los directorios legítimos de PHP.
-  RewriteCond %{REQUEST_URI} !^/(public|api)/
-  RewriteRule \.php$ - [F,L]
+  # ── 2. BLOQUEAR PHP EN LA RAÍZ ───────────────────────
+  # ^[^/]+\.php$ solo coincide con archivos PHP en la raíz
+  # (test.php, setup.php…). NO toca public/index.php ni
+  # api/auth/login.php porque esos paths contienen '/'.
+  # Sin condición sobre REQUEST_URI: evita dependencia de
+  # que esa variable se actualice entre ciclos de rewrite.
+  RewriteRule ^[^/]+\.php$ - [F,L]
 
-  # ── 3. PASOS DIRECTOS (sin reescritura) ──────────
-  # /api/  → los endpoints AJAX llegan aquí y se sirven tal cual
+  # ── 3. API PASA DIRECTO ───────────────────────────────
+  # Los endpoints AJAX se sirven tal cual, sin reescritura.
   RewriteRule ^api/ - [L]
 
-  # /public/ → assets CSS/JS/img y vistas PHP ya están en su lugar;
-  #            pasar directo es también la primera línea anti-loop:
-  #            si la URI ya es /public/... la regla catch-all no dispara.
+  # ── 4. PUBLIC PASA DIRECTO + ANTI-LOOP ───────────────
+  # /public/* se sirve tal cual.
+  # Esta regla también es la guarda anti-loop ESTRUCTURAL:
+  # después de que el catch-all reescriba cualquier ruta a
+  # public/index.php, el siguiente ciclo llega aquí y para.
+  # No depende de que %{REQUEST_URI} se actualice.
   RewriteRule ^public/ - [L]
 
-  # ── 4. ALIAS LEGACY ───────────────────────────────
-  # Rutas /assets/... sin prefijo /public/ que puedan venir de
-  # código viejo o marcadores del navegador
+  # ── 5. ALIAS LEGACY /assets/ ─────────────────────────
+  # Rutas /assets/... sin prefijo /public/ (marcadores,
+  # manifest.json, etc.) se mapean a public/assets/
   RewriteRule ^assets/(.*)$ public/assets/$1 [L]
 
-  # ── 5. FRONT CONTROLLER (catch-all) ───────────────
-  # Envía todo lo que no sea un archivo real a public/index.php.
-  #
-  # Condición A — %{REQUEST_URI} !^/public/
-  #   Guarda anti-loop definitiva: si Apache re-procesa el ruleset
-  #   tras reescribir a /public/index.php, esta condición es FALSE
-  #   y la regla no vuelve a disparar. Sin esto, en algunos Apache
-  #   de hosting compartido [L] no impide el segundo pase.
-  #
-  # Condición B — %{REQUEST_FILENAME} !-f
-  #   No sobreescribir archivos físicos que ya existen
-  #   (manifest.json, robots.txt, etc.)
-  RewriteCond %{REQUEST_URI}      !^/public/
-  RewriteCond %{REQUEST_FILENAME} !-f
+  # ── 6. FRONT CONTROLLER (catch-all) ──────────────────
+  # Todo lo demás → public/index.php.
+  # Sin condiciones adicionales: la regla ^public/ de arriba
+  # garantiza que el segundo ciclo siempre se detiene ahí.
   RewriteRule ^ public/index.php [QSA,L]
 
 </IfModule>
 
-# ---- Bloquear acceso al .env ----
+# ── Bloquear .env ──────────────────────────────────────
 <Files ".env">
   Order allow,deny
   Deny from all
 </Files>
 
-# ---- Cabeceras de seguridad ----
+# ── Cabeceras de seguridad ─────────────────────────────
 <IfModule mod_headers.c>
   Header always set X-Content-Type-Options "nosniff"
   Header always set X-Frame-Options "DENY"
@@ -75,18 +61,18 @@ Options -Indexes
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
-# ---- Compresión gzip ----
+# ── Compresión gzip ────────────────────────────────────
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json
 </IfModule>
 
-# ---- Cache para assets estáticos ----
+# ── Cache para assets estáticos ────────────────────────
 <IfModule mod_expires.c>
   ExpiresActive On
-  ExpiresByType text/css              "access plus 1 month"
-  ExpiresByType application/javascript "access plus 1 month"
-  ExpiresByType image/png             "access plus 1 year"
-  ExpiresByType image/jpeg            "access plus 1 year"
-  ExpiresByType image/svg+xml        "access plus 1 year"
+  ExpiresByType text/css                  "access plus 1 month"
+  ExpiresByType application/javascript    "access plus 1 month"
+  ExpiresByType image/png                 "access plus 1 year"
+  ExpiresByType image/jpeg                "access plus 1 year"
+  ExpiresByType image/svg+xml            "access plus 1 year"
   ExpiresByType application/manifest+json "access plus 1 day"
 </IfModule>

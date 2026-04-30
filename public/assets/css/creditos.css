@@ -1,0 +1,341 @@
+/* ================================================
+   Créditos — The Place 818
+   ================================================ */
+
+/* ── Cabecera ── */
+.cred-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.cred-title {
+  margin: 0 0 .2rem;
+  font-size: 1.1rem;
+  color: var(--color-text);
+}
+
+.cred-total-label {
+  margin: 0;
+  font-size: .85rem;
+  color: var(--color-muted);
+}
+
+.cred-total-label strong {
+  color: var(--color-error);
+}
+
+/* ── Layout ── */
+.cred-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 1rem;
+  min-height: 400px;
+}
+
+@media (max-width: 640px) {
+  .cred-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Sidebar (lista de clientes) ── */
+.cred-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.cred-search {
+  width: 100%;
+  padding: .55rem .75rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-text);
+  font-size: .9rem;
+  box-sizing: border-box;
+}
+
+.cred-search:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.cred-client-list {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+  overflow-y: auto;
+  max-height: 600px;
+}
+
+/* Tarjeta de cliente */
+.cred-client-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-accent);
+  border-radius: var(--radius);
+  padding: .65rem .8rem;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  position: relative;
+}
+
+.cred-client-card:hover,
+.cred-client-card.active {
+  border-left-color: var(--color-accent);
+  background: rgba(233, 69, 96, .08);
+}
+
+.cred-client-card.inactivo {
+  opacity: .55;
+  border-left-color: var(--color-muted);
+}
+
+.cred-client-name {
+  font-weight: 600;
+  font-size: .9rem;
+  margin: 0 0 .2rem;
+  color: var(--color-text);
+}
+
+.cred-client-saldo {
+  font-size: .8rem;
+  color: var(--color-error);
+  font-weight: 600;
+}
+
+.cred-client-saldo.saldo-cero {
+  color: var(--color-success);
+}
+
+.cred-client-meta {
+  font-size: .75rem;
+  color: var(--color-muted);
+  margin-top: .15rem;
+}
+
+/* ── Detalle ── */
+.cred-detalle {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  min-height: 300px;
+}
+
+.cred-detalle-placeholder {
+  display: flex;
+  height: 100%;
+  min-height: 200px;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted);
+  font-size: .9rem;
+}
+
+/* Info del cliente en detalle */
+.cred-detalle-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: .75rem;
+  margin-bottom: 1rem;
+  padding-bottom: .75rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cred-detalle-info h4 {
+  margin: 0 0 .2rem;
+  font-size: 1rem;
+}
+
+.cred-detalle-info p {
+  margin: 0;
+  font-size: .8rem;
+  color: var(--color-muted);
+}
+
+.cred-detalle-saldo {
+  text-align: right;
+}
+
+.cred-detalle-saldo .saldo-num {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-error);
+}
+
+.cred-detalle-saldo .saldo-num.saldo-cero {
+  color: var(--color-success);
+}
+
+.cred-detalle-saldo .saldo-bs {
+  font-size: .8rem;
+  color: var(--color-muted);
+}
+
+/* Acciones del detalle */
+.cred-detalle-actions {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+/* Lista de créditos */
+.cred-credito-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: .75rem 1rem;
+  margin-bottom: .6rem;
+}
+
+.cred-credito-card.pagado {
+  opacity: .6;
+  border-left: 3px solid var(--color-success);
+}
+
+.cred-credito-card.pendiente {
+  border-left: 3px solid var(--color-warning);
+}
+
+.cred-credito-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.cred-credito-desc {
+  font-weight: 600;
+  font-size: .9rem;
+}
+
+.cred-credito-fecha {
+  font-size: .75rem;
+  color: var(--color-muted);
+}
+
+.cred-credito-montos {
+  display: flex;
+  gap: 1rem;
+  margin: .4rem 0;
+  flex-wrap: wrap;
+}
+
+.cred-monto-item {
+  font-size: .82rem;
+}
+
+.cred-monto-item span {
+  font-weight: 600;
+}
+
+.cred-monto-item.pendiente span { color: var(--color-warning); }
+.cred-monto-item.abonado span   { color: var(--color-success); }
+.cred-monto-item.total span     { color: var(--color-muted); }
+
+/* Historial de abonos */
+.cred-abonos-list {
+  margin: .4rem 0 .6rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--color-border);
+}
+
+.cred-abono-row {
+  font-size: .78rem;
+  color: var(--color-muted);
+  padding: .15rem 0;
+}
+
+.cred-abono-row strong {
+  color: var(--color-success);
+}
+
+/* Acciones del crédito */
+.cred-credito-actions {
+  display: flex;
+  gap: .4rem;
+  margin-top: .5rem;
+  flex-wrap: wrap;
+}
+
+.cred-empty {
+  text-align: center;
+  color: var(--color-muted);
+  padding: 1.5rem 0;
+  font-size: .88rem;
+}
+
+/* Badge pagado/pendiente */
+.badge-pagado {
+  background: rgba(46, 204, 113, .15);
+  color: var(--color-success);
+  font-size: .72rem;
+  padding: .15rem .5rem;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.badge-pendiente {
+  background: rgba(241, 196, 15, .15);
+  color: var(--color-warning);
+  font-size: .72rem;
+  padding: .15rem .5rem;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+/* ── Modales ── */
+.cred-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 1rem;
+}
+
+.cred-modal-overlay.hidden {
+  display: none;
+}
+
+.cred-modal {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.cred-modal h4 {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+}
+
+.cred-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: .5rem;
+  margin-top: 1rem;
+}
+
+.cred-abono-info {
+  font-size: .85rem;
+  color: var(--color-muted);
+  background: var(--color-bg);
+  border-radius: var(--radius);
+  padding: .5rem .75rem;
+  margin-bottom: .75rem;
+}
