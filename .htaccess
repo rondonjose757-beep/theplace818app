@@ -1,26 +1,33 @@
+DirectoryIndex public/index.php
+
 Options -Indexes
 
 # ---- Proteger carpetas sensibles ----
 <IfModule mod_rewrite.c>
   RewriteEngine On
+  RewriteBase /
 
-  # Bloquear acceso directo a /config
+  # Bloquear acceso directo a /config e /install
   RewriteRule ^config(/|$) - [F,L]
-
-  # Bloquear acceso directo a /install
   RewriteRule ^install(/|$) - [F,L]
 
-  # Pasar /api/ directamente — son llamadas AJAX desde el navegador
+  # Bloquear ejecución directa de .php fuera de /public/ y /api/
+  RewriteCond %{REQUEST_URI} !^/(public|api)/
+  RewriteRule \.php$ - [F,L]
+
+  # Pasar /api/ directamente — llamadas AJAX desde el navegador
   RewriteRule ^api/ - [L]
 
-  # Redirigir /assets/ a /public/assets/ (rutas legacy sin prefijo /public/)
-  RewriteRule ^assets/(.*)$ /public/assets/$1 [L]
+  # Pasar /public/ directamente — assets y vistas PHP
+  RewriteRule ^public/ - [L]
 
-  # Redirigir todo lo demás a public/index.php si no es archivo ni directorio real
-  RewriteCond %{REQUEST_URI} !^/public/
+  # Redirigir /assets/ a /public/assets/ (rutas legacy sin prefijo /public/)
+  RewriteRule ^assets/(.*)$ public/assets/$1 [L]
+
+  # Todo lo demás (incluida /) → front controller
+  # Nota: se eliminó !-d para que la raíz "/" no cause 403
   RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule ^(.*)$ /public/index.php [QSA,L]
+  RewriteRule ^ public/index.php [QSA,L]
 </IfModule>
 
 # ---- Bloquear acceso al .env ----
