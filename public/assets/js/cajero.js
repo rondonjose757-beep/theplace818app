@@ -93,7 +93,7 @@ async function guardarTasa() {
     if (!tasa || tasa <= 0) { toast('Ingresa una tasa válida mayor a 0', 'err'); return; }
 
     setBusy(btn, true, 'Guardar');
-    const data = await api('/api/cajero/guardar_tasa.php', { tasa });
+    const data = await api('https://theplace818app.gastroredes.com/api/cajero/guardar_tasa.php', { tasa });
     setBusy(btn, false, 'Guardar');
 
     if (!data) return;
@@ -200,7 +200,7 @@ async function guardarPagos() {
         const val     = parseFloat(input?.value) || 0;
         const monto_bs  = m.moneda === 'bs'  ? +val.toFixed(2)  : +(val * state.tasa).toFixed(2);
         const monto_usd = m.moneda === 'usd' ? +val.toFixed(2)  : +(state.tasa > 0 ? val / state.tasa : 0).toFixed(2);
-        return api('/api/cajero/guardar_pago.php', {
+        return api('https://theplace818app.gastroredes.com/api/cajero/guardar_pago.php', {
             cuadre_id: state.cuadreId,
             metodo: m.key,
             monto_bs,
@@ -270,7 +270,7 @@ async function agregarGasto(e) {
     }
 
     setBusy(btn, true, '+ Agregar gasto');
-    const data = await api('/api/cajero/guardar_gasto.php', {
+    const data = await api('https://theplace818app.gastroredes.com/api/cajero/guardar_gasto.php', {
         cuadre_id: state.cuadreId, categoria, descripcion,
         monto_bs: +monto_bs.toFixed(2), monto_usd,
     });
@@ -289,7 +289,7 @@ async function agregarGasto(e) {
 
 window.eliminarGasto = async function(id) {
     if (!confirm('¿Eliminar este gasto?')) return;
-    const data = await api('/api/cajero/eliminar_gasto.php', { gasto_id: id });
+    const data = await api('https://theplace818app.gastroredes.com/api/cajero/eliminar_gasto.php', { gasto_id: id });
     if (data?.success) {
         state.gastos = state.gastos.filter(g => g.id !== id);
         renderGastos();
@@ -352,7 +352,7 @@ async function agregarConsumo(e) {
     }
 
     setBusy(btn, true, '+ Agregar consumo');
-    const data = await api('/api/cajero/guardar_consumo.php', {
+    const data = await api('https://theplace818app.gastroredes.com/api/cajero/guardar_consumo.php', {
         cuadre_id: state.cuadreId, responsable, descripcion,
         cantidad, precio_usd: +precio_usd.toFixed(2), precio_bs,
     });
@@ -372,7 +372,7 @@ async function agregarConsumo(e) {
 
 window.eliminarConsumo = async function(id) {
     if (!confirm('¿Eliminar este consumo?')) return;
-    const data = await api('/api/cajero/eliminar_consumo.php', { consumo_id: id });
+    const data = await api('https://theplace818app.gastroredes.com/api/cajero/eliminar_consumo.php', { consumo_id: id });
     if (data?.success) {
         state.consumo = state.consumo.filter(c => c.id !== id);
         renderConsumo();
@@ -416,7 +416,7 @@ async function cerrarCaja() {
     const btn = document.getElementById('btn-cerrar-caja');
     setBusy(btn, true, '🔒 Cerrar caja del día');
 
-    const data = await api('/api/cajero/cerrar_caja.php', {
+    const data = await api('https://theplace818app.gastroredes.com/api/cajero/cerrar_caja.php', {
         cuadre_id: state.cuadreId,
         observaciones: obs,
     });
@@ -449,7 +449,7 @@ function activarModoSoloLectura() {
 // ─── Carga inicial ───────────────────────────────────────────────────────
 
 async function init() {
-    const data = await api('/api/cajero/obtener_cuadre.php');
+    const data = await api('https://theplace818app.gastroredes.com/api/cajero/obtener_cuadre.php');
     if (!data) return;
 
     if (data.tasa) {
@@ -523,10 +523,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Cerrar caja
     document.getElementById('btn-cerrar-caja').addEventListener('click', cerrarCaja);
-
-    // Logout
-    document.getElementById('logout-btn').addEventListener('click', async () => {
-        await fetch('/api/auth/logout.php');
-        window.location.href = '/';
-    });
 });

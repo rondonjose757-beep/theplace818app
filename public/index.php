@@ -17,6 +17,7 @@ $nombre   = $_SESSION['nombre'] ?? '';
   <title>The Place 818 — Control de Caja</title>
   <link rel="manifest" href="/public/manifest.json" />
   <link rel="stylesheet" href="/public/assets/css/app.css" />
+  <link rel="stylesheet" href="/public/assets/css/cajero.css" />
 </head>
 <body>
 
@@ -71,8 +72,7 @@ $nombre   = $_SESSION['nombre'] ?? '';
   <main id="view-container" class="view-container">
     <!-- Las vistas se cargan dinámicamente con JS -->
     <div id="view-caja" class="view active">
-      <h3>Caja del día</h3>
-      <p class="placeholder-text">Módulo en construcción.</p>
+      <?php include __DIR__ . '/cajero.php'; ?>
     </div>
 
     <?php if (in_array($rol, ['administrador', 'dueño'])): ?>
@@ -97,5 +97,6 @@ $nombre   = $_SESSION['nombre'] ?? '';
 <?php endif; ?>
 
 <script src="/public/assets/js/app.js"></script>
+<script src="/public/assets/js/cajero.js"></script>
 </body>
 </html>

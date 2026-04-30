@@ -1,56 +1,3 @@
-<?php
-declare(strict_types=1);
-session_start();
-
-// Guard: solo cajero o administrador
-if (!isset($_SESSION['user_id'])) {
-    header('Location: /');
-    exit;
-}
-$rol = $_SESSION['rol'] ?? '';
-if (!in_array($rol, ['cajero', 'administrador'], true)) {
-    header('Location: /');
-    exit;
-}
-
-$nombre = htmlspecialchars($_SESSION['nombre'] ?? '', ENT_QUOTES);
-$rolLabel = match($rol) {
-    'administrador' => 'Administrador',
-    'cajero'        => 'Cajero',
-    default         => $rol,
-};
-$fechaHoy = date('d/m/Y');
-?>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#1a1a2e" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>Caja del Día — The Place 818</title>
-  <link rel="manifest" href="/manifest.json" />
-  <link rel="stylesheet" href="/assets/css/app.css" />
-  <link rel="stylesheet" href="/assets/css/cajero.css" />
-</head>
-<body>
-
-<!-- ================================================================
-     CABECERA
-================================================================ -->
-<header class="app-header">
-  <div class="app-title">The Place <span>818</span></div>
-  <div class="user-info">
-    <div style="text-align:right;line-height:1.2;">
-      <span class="user-name"><?= $nombre ?></span><br>
-      <span style="font-size:0.7rem;color:var(--color-muted);"><?= $fechaHoy ?></span>
-    </div>
-    <span class="badge badge-<?= htmlspecialchars($rol) ?>"><?= $rolLabel ?></span>
-    <button id="logout-btn" class="btn btn-sm btn-outline">Salir</button>
-  </div>
-</header>
-
 <!-- Banner caja cerrada (oculto por defecto) -->
 <div id="banner-cerrado" class="banner-cerrado hidden">
   🔒 CAJA CERRADA — Solo lectura
@@ -250,7 +197,3 @@ $fechaHoy = date('d/m/Y');
 
 <!-- Toast de notificaciones -->
 <div id="toast" class="toast hidden"></div>
-
-<script src="/assets/js/cajero.js"></script>
-</body>
-</html>

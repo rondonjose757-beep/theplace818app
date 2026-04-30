@@ -3,7 +3,7 @@ declare(strict_types=1);
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/auth_check.php';
-require_once dirname(__DIR__, 2) . '/config/database.php';
+require_once __DIR__ . '/../../config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
